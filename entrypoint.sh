@@ -28,7 +28,7 @@ if [ "$INPUT_ONLYCHANGED" == "false" ]; then
 	FILES_TO_CHECK=`find . -name '*.sch' -o -name '*.kicad_pcb'`
 else
 	echo "Checking Changed Files from ${FROM_REF} to ${TO_REF}"
-	FILES_TO_CHECK=`git diff --name-only FROM_REF TO_REF`
+	FILES_TO_CHECK=`git diff --name-only ${FROM_REF} ${TO_REF}`
 fi
 
 ret=0
