@@ -9,17 +9,18 @@ REPO=`jq -r ".repository.full_name" "${GITHUB_EVENT_PATH}"`
 
 if [[ $(jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}") != "null" ]]; then
 	PR=`jq -r ".number" "${GITHUB_EVENT_PATH}"`
-	TO_REF=`jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}"`
-	FROM_REF=`jq -r ".pull_request.base.ref" "${GITHUB_EVENT_PATH}"`
-	echo "Run for PR # ${PR} of ${TO_REF} into ${FROM_REF} on ${REPO}"
-elif [[ $(jq -r ".after" "${GITHUB_EVENT_PATH}") != "null" ]]; then
-	TO_BRACH=`jq -r ".after" "${GITHUB_EVENT_PATH}"`
-	FROM_BRANCH=`jq -r ".before" "${GITHUB_EVENT_PATH}"`
-	BRANCH_NAME=`jq -r ".ref" "${GITHUB_EVENT_PATH}"`
-	echo "Run for push of ${BRANCH_NAME} from ${FROM_BRANCH} to ${TO_BRANCH} on ${REPO}"
+	TO_BRANCH=`jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}"`
+	FROM_BRANCH=`jq -r ".pull_request.base.ref" "${GITHUB_EVENT_PATH}"`
+	echo "Run for PR # ${PR} of ${TO_BRANCH} into ${FROM_BRANCH} on ${REPO}"
 	TO_REF=`git rev-parse ${TO_BRANCH}`
 	FROM_REF=`git rev-parse ${FROM_BRANCH}`
 	echo "(${FROM_REF} -> ${TO_REF})"
+elif [[ $(jq -r ".after" "${GITHUB_EVENT_PATH}") != "null" ]]; then
+	TO_REF=`jq -r ".after" "${GITHUB_EVENT_PATH}"`
+	FROM_REF=`jq -r ".before" "${GITHUB_EVENT_PATH}"`
+	BRANCH_NAME=`jq -r ".ref" "${GITHUB_EVENT_PATH}"`
+	echo "Run for push of ${BRANCH_NAME} from ${FROM_REF} to ${TO_REF} on ${REPO}"
+
 else
 	error "Unknown Github Event Path"
 fi
