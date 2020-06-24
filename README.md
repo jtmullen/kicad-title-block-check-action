@@ -63,7 +63,7 @@ jobs:
             schCompRegex: "Company Name"
             pcbPageSizeRegex: "US Letter"
             pcbCompRegex: "Company Name"
-
+```
 
 You can also see [where this is used](https://github.com/search?l=YAML&q=kicad-title-block-check-action&type=Code)
 
