@@ -14,8 +14,9 @@ if [[ $(jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}") != "null" ]]; the
 	TO_BRANCH=`jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}"`
 	FROM_BRANCH=`jq -r ".pull_request.base.ref" "${GITHUB_EVENT_PATH}"`
 	echo "Run for PR # ${PR} of ${TO_BRANCH} into ${FROM_BRANCH} on ${REPO}"
-	URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${PR}/files"
-        FILES_TO_CHECK=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+	TO_REF=`git rev-parse origin/${TO_BRANCH}`
+	FROM_REF=`git rev-parse origin/${FROM_BRANCH}`
+	echo "(${FROM_REF} -> ${TO_REF})"
 elif [[ $(jq -r ".after" "${GITHUB_EVENT_PATH}") != "null" ]]; then
 	TO_REF=`jq -r ".after" "${GITHUB_EVENT_PATH}"`
 	FROM_REF=`jq -r ".before" "${GITHUB_EVENT_PATH}"`
