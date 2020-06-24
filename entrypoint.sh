@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/sh -l
 
 error () {
 	echo "::error::$1"
