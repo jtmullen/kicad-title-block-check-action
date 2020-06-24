@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash -l
 
 error () {
 	echo "::error::$1"
@@ -69,7 +69,7 @@ for file in $FILES_TO_CHECK
 do
 	
 	## Schematic Files
-	if [[ ("${file: -4}" == ".sch") && ("${INPUT_CHECKSCHEMATICS}" == "true") ]]; then
+	if [[ (${file: -4} == ".sch") && ("${INPUT_CHECKSCHEMATICS}" == "true") ]]; then
 		COUNT=$((COUNT+1))
 		echo "Checking Schematic $file..."
 		awk '
