@@ -1,0 +1,101 @@
+name: 'KiCad Title Block Check'
+author: 'jtmullen'
+description: 'Check that the title block in KiCad Schematics and/or PCBs meet given requirements'
+branding:
+  icon: 'corner-down-right'
+  color: 'file-text'
+inputs:
+  onlyChanged:
+    descripton: "Check all files, or just those changed"
+    required: false
+    default: 'false'
+  checkSchematics:
+    description: "If schematics should be checked"
+    required: false
+    default: 'true'
+  checkPCBs:
+    description: "If PCBs should be checked"
+    required: false
+    default: 'true'
+  schPageSizeRegex:
+    description: "The required page size for Schematics"
+    required: false
+    default: '(.*)'
+  schTitleRegex:
+    description: "The regex to verify the Schematic title meets requirements"
+    required: false
+    default: '(.*)'
+  schDateRegex:
+    description: "The regex to verify the Schematic Date meets requirements"
+    required: false
+    default: '(.*)'
+  schRevRegex:
+    description: "The regex to verify the Schematic Revision meets requirements"
+    required: false
+    default: '(.*)'
+  schCompRegex:
+    description: "The regex to verify the Schematic Company Field meets requirements"
+    required: false
+    default: '(.*)'
+  schComment1Regex:
+    description: "The regex to verify the Schematic Comment1 Field meets requirements"
+    required: false
+    default: '(.*)'
+  schComment2Regex:
+    description: "The regex to verify the Schematic Comment2 Field meets requirements"
+    required: false
+    default: '(.*)'
+  schComment3Regex:
+    description: "The regex to verify the Schematic Comment3 Field meets requirements"
+    required: false
+    default: '(.*)'
+  schComment4Regex:
+    description: "The regex to verify the Schematic Comment4 Field meets requirements"
+    required: false
+    default: '(.*)'
+  pcbPageSizeRegex:
+    description: "The required page size for PCBs"
+    required: false
+    default: '(.*)'
+  pcbTitleRegex:
+    description: "The regex to verify the PCB title meets requirements"
+    required: false
+    default: '(.*)'
+  pcbDateRegex:
+    description: "The regex to verify the PCB Date meets requirements"
+    required: false
+    default: '(.*)'
+  pcbRevRegex:
+    description: "The regex to verify the PCB Revision meets requirements"
+    required: false
+    default: '(.*)'
+  pcbCompRegex:
+    description: "The regex to verify the PCB Company Field meets requirements"
+    required: false
+    default: '(.*)'
+  pcbComment1Regex:
+    description: "The regex to verify the PCB Comment1 Field meets requirements"
+    required: false
+    default: '(.*)'
+  pcbComment2Regex:
+    description: "The regex to verify the PCB Comment2 Field meets requirements"
+    required: false
+    default: '(.*)'
+  pcbComment3Regex:
+    description: "The regex to verify the PCB Comment3 Field meets requirements"
+    required: false
+    default: '(.*)'
+  pcbComment4Regex:
+    description: "The regex to verify the PCB Comment4 Field meets requirements"
+    required: false
+    default: '(.*)'
+outputs:
+  fails:
+    description: "File(s) that failed, if run failed"
+  percent:
+    description: "The percent of checked that passed"
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.path }}
