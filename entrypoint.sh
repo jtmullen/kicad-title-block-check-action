@@ -7,6 +7,8 @@ error () {
 
 REPO=`jq -r ".repository.full_name" "${GITHUB_EVENT_PATH}"`
 
+cd "${GITHUB_WORKSPACE}" || die "Error: Cannot change directory to Github Workspace"
+
 if [[ $(jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}") != "null" ]]; then
 	PR=`jq -r ".number" "${GITHUB_EVENT_PATH}"`
 	TO_BRANCH=`jq -r ".pull_request.head.ref" "${GITHUB_EVENT_PATH}"`
@@ -20,12 +22,9 @@ elif [[ $(jq -r ".after" "${GITHUB_EVENT_PATH}") != "null" ]]; then
 	FROM_REF=`jq -r ".before" "${GITHUB_EVENT_PATH}"`
 	BRANCH_NAME=`jq -r ".ref" "${GITHUB_EVENT_PATH}"`
 	echo "Run for push of ${BRANCH_NAME} from ${FROM_REF} to ${TO_REF} on ${REPO}"
-
 else
 	error "Unknown Github Event Path"
 fi
-
-#cd "${GITHUB_WORKSPACE}" || die "Error: Cannot change directory to Github Workspace"
 
 if [ "$INPUT_ONLYCHANGED" == "false" ]; then
 	echo "Checking All Files"
