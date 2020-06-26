@@ -2,8 +2,8 @@ name: 'KiCad Title Block Check'
 author: 'jtmullen'
 description: 'Check that the title block in KiCad Schematics and/or PCBs meet given requirements'
 branding:
-  icon: 'corner-down-right'
-  color: 'file-text'
+  icon: 'file-text'
+  color: 'orange'
 inputs:
   onlyChanged:
     descripton: "Check all files, or just those changed"
