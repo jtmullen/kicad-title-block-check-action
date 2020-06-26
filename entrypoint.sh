@@ -22,7 +22,6 @@ elif [[ $(jq -r ".after" "${GITHUB_EVENT_PATH}") != "null" ]]; then
 	FROM_REF=`jq -r ".before" "${GITHUB_EVENT_PATH}"`
 	BRANCH_NAME=`jq -r ".ref" "${GITHUB_EVENT_PATH}"`
 	echo "Run for push of ${BRANCH_NAME} from ${FROM_REF} to ${TO_REF} on ${REPO}"
-	FILES_TO_CHECK=`git diff --name-only ${FROM_REF} ${TO_REF}`
 else
 	error "Unknown Github Event Path"
 fi
@@ -30,6 +29,8 @@ fi
 if [ "$INPUT_ONLYCHANGED" == "false" ]; then
 	echo "Checking All Files"
 	FILES_TO_CHECK=`find . -name '*.sch' -o -name '*.kicad_pcb'`
+else
+	FILES_TO_CHECK=`git diff --name-only ${FROM_REF} ${TO_REF}`
 fi
 
 ret=0
@@ -41,7 +42,7 @@ FAIL_COUNT=0;
 ## Handle failures. Input 1: File Name; Input 2: Expected value
 fail () {
 	failed="$failed$1"
-	echo "::error file=$1::$2"
+	echo "::error file=$1::$2 Title Block not valid in $1"
 	FAIL_COUNT=$((FAIL_COUNT+1))
 	ret=1
 }
@@ -67,7 +68,6 @@ if [[ -z "$INPUT_PCBCOMMENT4REGEX" ]]; then	OPTIONAL_COMMENT4="1"; fi
 
 for file in $FILES_TO_CHECK
 do
-	
 	## Schematic Files
 	if [ ${file: -4} == ".sch" ] && [ "${INPUT_CHECKSCHEMATICS}" == "true" ]; then
 		COUNT=$((COUNT+1))
