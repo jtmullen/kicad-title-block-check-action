@@ -27,6 +27,9 @@ else
 	error "Unknown Github Event Path"
 fi
 
+echo "Checking:"
+echo "${FILES_TO_CHECK}"
+
 if [ "$INPUT_ONLYCHANGED" == "false" ]; then
 	echo "Checking All Files"
 	FILES_TO_CHECK=`find . -name '*.sch' -o -name '*.kicad_pcb'`
