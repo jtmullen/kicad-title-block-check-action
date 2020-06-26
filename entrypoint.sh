@@ -22,7 +22,6 @@ elif [[ $(jq -r ".after" "${GITHUB_EVENT_PATH}") != "null" ]]; then
 	FROM_REF=`jq -r ".before" "${GITHUB_EVENT_PATH}"`
 	BRANCH_NAME=`jq -r ".ref" "${GITHUB_EVENT_PATH}"`
 	echo "Run for push of ${BRANCH_NAME} from ${FROM_REF} to ${TO_REF} on ${REPO}"
-	FILES_TO_CHECK=`git diff --name-only ${FROM_REF} ${TO_REF}`
 else
 	error "Unknown Github Event Path"
 fi
@@ -33,6 +32,8 @@ echo "${FILES_TO_CHECK}"
 if [ "$INPUT_ONLYCHANGED" == "false" ]; then
 	echo "Checking All Files"
 	FILES_TO_CHECK=`find . -name '*.sch' -o -name '*.kicad_pcb'`
+else
+	FILES_TO_CHECK=`git diff --name-only ${FROM_REF} ${TO_REF}`
 fi
 
 ret=0
