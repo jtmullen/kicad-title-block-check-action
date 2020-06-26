@@ -26,9 +26,6 @@ else
 	error "Unknown Github Event Path"
 fi
 
-echo "Checking:"
-echo "${FILES_TO_CHECK}"
-
 if [ "$INPUT_ONLYCHANGED" == "false" ]; then
 	echo "Checking All Files"
 	FILES_TO_CHECK=`find . -name '*.sch' -o -name '*.kicad_pcb'`
@@ -45,7 +42,7 @@ FAIL_COUNT=0;
 ## Handle failures. Input 1: File Name; Input 2: Expected value
 fail () {
 	failed="$failed$1"
-	echo "::error file=$1::$2"
+	echo "::error file=$1::$2 Title Block not valid in $1"
 	FAIL_COUNT=$((FAIL_COUNT+1))
 	ret=1
 }
@@ -71,7 +68,6 @@ if [[ -z "$INPUT_PCBCOMMENT4REGEX" ]]; then	OPTIONAL_COMMENT4="1"; fi
 
 for file in $FILES_TO_CHECK
 do
-	echo "File is $file"
 	## Schematic Files
 	if [ ${file: -4} == ".sch" ] && [ "${INPUT_CHECKSCHEMATICS}" == "true" ]; then
 		COUNT=$((COUNT+1))
