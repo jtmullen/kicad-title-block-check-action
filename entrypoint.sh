@@ -91,7 +91,7 @@ do
 			END{if(pass){exit 0}else{print "Error Before: ", failedAt; exit 1}} ' "$file" || fail "$file" "Schematic"
 	
 	## PCB Files
-	elif [[ (${file: -10} == ".kicad_pcb") && ("${INPUT_CHECKPCBS}" == "true") ]]; then
+	elif [ ${file: -10} == ".kicad_pcb" ] && [ "${INPUT_CHECKPCBS}" == "true" ]; then
 		COUNT=$((COUNT+1))
 		echo "Checking PCB $file..."
 		awk '
