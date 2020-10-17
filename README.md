@@ -56,7 +56,7 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v2
         - name: Check Title Blocks
-          uses: jtmullen/kicad-title-block-check-action@v0.1-beta
+          uses: jtmullen/kicad-title-block-check-action@v0-beta
           with:
             onlyChanged: true
             schPageSizeRegex: "US Letter"
