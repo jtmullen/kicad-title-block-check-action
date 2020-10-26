@@ -66,7 +66,7 @@ if [[ -z "$INPUT_PCBCOMMENT3REGEX" ]]; then	OPTIONAL_COMMENT3="1"; fi
 if [[ -z "$INPUT_PCBCOMMENT4REGEX" ]]; then	OPTIONAL_COMMENT4="1"; fi
 
 
-for file in "$FILES_TO_CHECK"
+for file in $FILES_TO_CHECK
 do
 	## Schematic Files
 	if [ ${file: -4} == ".sch" ] && [ "${INPUT_CHECKSCHEMATICS}" == "true" ]; then
