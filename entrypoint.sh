@@ -99,7 +99,7 @@ do
 			/[\r\n\t\f\v *]\)/ {if (titleBlock) { exit }}
 			/[\r\n\t\f\v *]\(page '"$INPUT_PCBPAGESIZEREGEX"'\)/ { pageSize = 1; print "Found Page Size"; next;}
 			/[\r\n\t\f\v *]\(title_block/ { titleBlock = 1; print "Found Title Block Start"; next;}
-			/[\r\n\t\f\v *]\(title \"?'"$INPUT_PCBTITLEREGEX"'\"?\)/ { if(titleBlock){title = 1; print "Found Title"; next;}
+			/[\r\n\t\f\v *]\(title \"?'"$INPUT_PCBTITLEREGEX"'\"?\)/ { if(titleBlock){title = 1; print "Found Title"; next;}}
 			/[\r\n\t\f\v *]\(date '"$INPUT_PCBDATEREGEX"'\)/ { if(titleBlock){date = 1; print "Found Date"; next;}}
 			/[\r\n\t\f\v *]\(rev \"?'"$INPUT_PCBREVREGEX"'\"?\)/ { if(titleBlock){rev = 1; print "Found Rev"; next;}}
 			/[\r\n\t\f\v *]\(company \"?'"$INPUT_PCBCOMPREGEX"'\"?\)/ { if(titleBlock){company = 1; print "Found Comp"; next;}}
