@@ -56,6 +56,8 @@ OPTIONAL_COMMENT2="0";
 OPTIONAL_COMMENT3="0";
 OPTIONAL_COMMENT4="0";
 
+echo "HELLO!!!"
+
 if [[ -z "${INPUT_PCBTITLEREGEX}" ]]; then	
 	echo "Optional Title"
 	OPTIONAL_TITLE="1"
