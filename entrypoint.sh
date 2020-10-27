@@ -97,16 +97,16 @@ do
 		awk '
 			BEGIN{ pageSize=0; titleBlock=0; title=0; date=0; rev=0; company=0; comment1=0; comment2=0; comment3=0; comment4=0; }
 			/[\r\n\t\f\v *]\)/ {if (titleBlock) { exit }}
-			/[\r\n\t\f\v *]\(page '"$INPUT_PCBPAGESIZEREGEX"'\)/ { pageSize = 1; next;}
-			/[\r\n\t\f\v *]\(title_block/ { titleBlock = 1; next;}
-			/[\r\n\t\f\v *]\(title \"?'"$INPUT_PCBTITLEREGEX"'\"?\)/ { if(titleBlock){title = 1;}; next;}
-			/[\r\n\t\f\v *]\(date '"$INPUT_PCBDATEREGEX"'\)/ { if(titleBlock){date = 1; next;}}
-			/[\r\n\t\f\v *]\(rev \"?'"$INPUT_PCBREVREGEX"'\"?\)/ { if(titleBlock){rev = 1; next;}}
-			/[\r\n\t\f\v *]\(company \"?'"$INPUT_PCBCOMPREGEX"'\"?\)/ { if(titleBlock){company = 1; next;}}
-			/[\r\n\t\f\v *]\(comment 1 \"?'"$INPUT_PCBCOMMENT1REGEX"'\"?\)/ { if(titleBlock){comment1 = 1; next;}}
-			/[\r\n\t\f\v *]\(comment 2 \"?'"$INPUT_PCBCOMMENT2REGEX"'\"?\)/ { if(titleBlock){comment2 = 1; next;}}
-			/[\r\n\t\f\v *]\(comment 3 \"?'"$INPUT_PCBCOMMENT3REGEX"'\"?\)/ { if(titleBlock){comment3 = 1; next;}}
-			/[\r\n\t\f\v *]\(comment 4 \"?'"$INPUT_PCBCOMMENT4REGEX"'\"?\)/ { if(titleBlock){comment4 = 1; next;}}
+			/[\r\n\t\f\v *]\(page '"$INPUT_PCBPAGESIZEREGEX"'\)/ { pageSize = 1; print "Found Page Size"; next;}
+			/[\r\n\t\f\v *]\(title_block/ { titleBlock = 1; print "Found Title Block Start"; next;}
+			/[\r\n\t\f\v *]\(title \"?'"$INPUT_PCBTITLEREGEX"'\"?\)/ { if(titleBlock){title = 1; print "Found Title"; next;}
+			/[\r\n\t\f\v *]\(date '"$INPUT_PCBDATEREGEX"'\)/ { if(titleBlock){date = 1; print "Found Date"; next;}}
+			/[\r\n\t\f\v *]\(rev \"?'"$INPUT_PCBREVREGEX"'\"?\)/ { if(titleBlock){rev = 1; print "Found Rev"; next;}}
+			/[\r\n\t\f\v *]\(company \"?'"$INPUT_PCBCOMPREGEX"'\"?\)/ { if(titleBlock){company = 1; print "Found Comp"; next;}}
+			/[\r\n\t\f\v *]\(comment 1 \"?'"$INPUT_PCBCOMMENT1REGEX"'\"?\)/ { if(titleBlock){comment1 = 1; print "Found Com1"; next;}}
+			/[\r\n\t\f\v *]\(comment 2 \"?'"$INPUT_PCBCOMMENT2REGEX"'\"?\)/ { if(titleBlock){comment2 = 1; print "Found Com2"; next;}}
+			/[\r\n\t\f\v *]\(comment 3 \"?'"$INPUT_PCBCOMMENT3REGEX"'\"?\)/ { if(titleBlock){comment3 = 1; print "Found Com3"; next;}}
+			/[\r\n\t\f\v *]\(comment 4 \"?'"$INPUT_PCBCOMMENT4REGEX"'\"?\)/ { if(titleBlock){comment4 = 1; print "Found Com4"; next;}}
 			END{if (pageSize && titleBlock && (title || '"$OPTIONAL_TITLE"') && (date || '"$OPTIONAL_DATE"') && (rev || '"$OPTIONAL_REV"') && (company || '"$OPTIONAL_COMP"') && (comment1 || '"$OPTIONAL_COMMENT1"') && (comment2 || '"$OPTIONAL_COMMENT2"') && (comment3 || '"$OPTIONAL_COMMENT3"') && (comment4 || '"$OPTIONAL_COMMENT4"')) { exit 0 } else {exit 1 }}' "$file" || fail "$file" "PCB"
 	fi
 	
