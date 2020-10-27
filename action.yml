@@ -56,39 +56,39 @@ inputs:
   pcbPageSizeRegex:
     description: "The required page size for PCBs"
     required: false
-    default: '(.*)'
+    default: ''
   pcbTitleRegex:
     description: "The regex to verify the PCB title meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbDateRegex:
     description: "The regex to verify the PCB Date meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbRevRegex:
     description: "The regex to verify the PCB Revision meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbCompRegex:
     description: "The regex to verify the PCB Company Field meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbComment1Regex:
     description: "The regex to verify the PCB Comment1 Field meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbComment2Regex:
     description: "The regex to verify the PCB Comment2 Field meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbComment3Regex:
     description: "The regex to verify the PCB Comment3 Field meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
   pcbComment4Regex:
     description: "The regex to verify the PCB Comment4 Field meets requirements"
     required: false
-    default: '(.*)'
+    default: ''
 outputs:
   fails:
     description: "File(s) that failed, if run failed"
