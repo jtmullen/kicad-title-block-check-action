@@ -56,14 +56,38 @@ OPTIONAL_COMMENT2="0";
 OPTIONAL_COMMENT3="0";
 OPTIONAL_COMMENT4="0";
 
-if [[ -z "${INPUT_PCBTITLEREGEX}" ]]; then	OPTIONAL_TITLE="1"; fi
-if [[ -z "${INPUT_PCBDATEREGEX}" ]]; then	OPTIONAL_DATE="1"; fi
-if [[ -z "$INPUT_PCBREVREGEX" ]]; then	OPTIONAL_REV="1"; fi
-if [[ -z "$INPUT_PCBCOMPREGEX" ]]; then	OPTIONAL_COMP="1"; fi
-if [[ -z "$INPUT_PCBCOMMENT1REGEX" ]]; then	OPTIONAL_COMMENT1="1"; fi
-if [[ -z "$INPUT_PCBCOMMENT2REGEX" ]]; then	OPTIONAL_COMMENT2="1"; fi
-if [[ -z "$INPUT_PCBCOMMENT3REGEX" ]]; then	OPTIONAL_COMMENT3="1"; fi
-if [[ -z "$INPUT_PCBCOMMENT4REGEX" ]]; then	OPTIONAL_COMMENT4="1"; fi
+if [[ -z "${INPUT_PCBTITLEREGEX}" ]]; then	
+	echo "Optional Title"
+	OPTIONAL_TITLE="1"
+fi
+if [[ -z "${INPUT_PCBDATEREGEX}" ]]; then	
+	echo "Optional DATE"
+	OPTIONAL_DATE="1"
+fi
+if [[ -z "$INPUT_PCBREVREGEX" ]]; then	
+	echo "Optional REV"
+	OPTIONAL_REV="1"
+fi
+if [[ -z "$INPUT_PCBCOMPREGEX" ]]; then	
+	echo "Optional COMP"
+	OPTIONAL_COMP="1"
+fi
+if [[ -z "$INPUT_PCBCOMMENT1REGEX" ]]; then	
+	echo "Optional Com1"
+	OPTIONAL_COMMENT1="1"
+fi
+if [[ -z "$INPUT_PCBCOMMENT2REGEX" ]]; then	
+	echo "Optional Com2"
+	OPTIONAL_COMMENT2="1"
+fi
+if [[ -z "$INPUT_PCBCOMMENT3REGEX" ]]; then	
+	echo "Optional Com3"
+	OPTIONAL_COMMENT3="1"
+fi
+if [[ -z "$INPUT_PCBCOMMENT4REGEX" ]]; then	
+	echo "Optional Com4"
+	OPTIONAL_COMMENT4="1"
+fi
 
 
 for file in $FILES_TO_CHECK
