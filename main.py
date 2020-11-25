@@ -102,7 +102,7 @@ def main():
 		format = '--name-only'
 		allFiles = []
 		repo = git.Git(os.environ["GITHUB_WORKSPACE"])
-		diffed = repo.diff('%s...%s' % (prBase, prBranch), format).split('\n')
+		diffed = repo.diff('origin/%s...origin/%s' % (prBase, prBranch), format).split('\n')
 		for line in diffed:
 			if len(line):
 				allFiles.append(line)
@@ -113,9 +113,6 @@ def main():
 				schToCheck.append(file)
 
 
-
-
-	print(pcbsToCheck)
 	print("::endgroup::")
 
 	if not pcbsToCheck:
