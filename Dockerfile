@@ -3,9 +3,9 @@ ADD . /app
 WORKDIR /app
 
 # We are installing a dependency here directly into our app source dir
-RUN apk --no-cache add git
-RUN pip install --target=/app gitpython
-RUN pip install --target=/app PyYAML
+RUN apt-get install -y --no-install-recommends git \
+&& pip install --target=/app gitpython \
+&& pip install --target=/app PyYAML
 
 # A distroless container image with Python and some basics like SSL certificates
 # https://github.com/GoogleContainerTools/distroless
