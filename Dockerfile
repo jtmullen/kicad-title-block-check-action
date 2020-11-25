@@ -10,8 +10,7 @@ RUN pip install --target=/app PyYAML
 # https://github.com/GoogleContainerTools/distroless
 FROM gcr.io/distroless/python3-debian10
 COPY --from=builder /app /app
-RUN apt-get update \
-&& apt-get install -y git
+RUN apk --no-cache add git
 WORKDIR /app
 ENV PYTHONPATH /app
 CMD ["/app/main.py"]
