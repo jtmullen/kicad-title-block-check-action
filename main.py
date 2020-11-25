@@ -29,11 +29,6 @@ def main():
 	print("::group::Set Up")
 	print("Python Version: {}".format(sys.version))
 
-	print("Checkout submodule repo")
-	actionRepo = git.Repo(os.path.dirname(os.path.realpath(__file__)))
-	for submodule in repo.submodules:
-		submodule.update(init=True)
-
 	try:
 		from kicad_parser import KicadPCB
 	except ImportError:
