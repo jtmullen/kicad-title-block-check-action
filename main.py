@@ -219,7 +219,8 @@ def main():
 				elif descrFound:
 					for field in thisCheck:
 						if thisCheck[field]:
-							if match := re.match("{} \"(.*)\"".format(schFieldMaps[field]), line):
+							if re.match("{} \"(.*)\"".format(schFieldMaps[field]), line):
+								match = re.match("{} \"(.*)\"".format(schFieldMaps[field]), line
 								if not re.match(sch_checks[field], match.group(1)):
 									fail(file, "{}: {}, does not match: {}".format(field, match.group(1), sch_checks[field]))
 								thisCheck[field] = False
