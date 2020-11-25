@@ -1,5 +1,7 @@
 FROM alpine:3.10
 
+RUN ls
+
 COPY .git/ /.git/
 COPY main.py /main.py
 COPY kicad_parser/ /kicad_parser/
