@@ -10,7 +10,6 @@ RUN pip install --target=/app PyYAML
 # A distroless container image with Python and some basics like SSL certificates
 # https://github.com/GoogleContainerTools/distroless
 FROM gcr.io/distroless/python3-debian10
-RUN apk --no-cache add git
 COPY --from=builder /app /app
 WORKDIR /app
 ENV PYTHONPATH /app

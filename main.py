@@ -1,6 +1,7 @@
+from subprocess import check_call, CalledProcessError
+import os
 import yaml
 import re
-import os
 import json
 from pathlib import Path
 import git
@@ -26,8 +27,14 @@ def main():
 	print("::group::Set Up")
 	print("Python Version: {}".format(sys.version))
 
-	print("Checkout submodule repo")
-	
+	print("Install Git")
+
+	try:
+		check_call(['apt-get', 'install', '-y', 'filetoinstall'], stdout=open(os.devnull,'wb'))
+	except CalledProcessError as e:
+		error(e.output)
+
+	print("Checkout submodule repo"
 	actionRepo = git.repo(os.path.dirname(os.path.realpath(__file__)))
 	for submodule in repo.submodules:
 		submodule.update(init=True)
