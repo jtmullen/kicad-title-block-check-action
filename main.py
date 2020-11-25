@@ -7,6 +7,7 @@ import re
 import json
 from pathlib import Path
 import git
+from git import repo
 import sys
 
 checkPCB = False
