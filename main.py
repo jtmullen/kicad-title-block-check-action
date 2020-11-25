@@ -7,7 +7,6 @@ import re
 import json
 from pathlib import Path
 import git
-from git import repo
 import sys
 
 checkPCB = False
@@ -31,7 +30,7 @@ def main():
 	print("Python Version: {}".format(sys.version))
 
 	print("Checkout submodule repo")
-	actionRepo = git.repo(os.path.dirname(os.path.realpath(__file__)))
+	actionRepo = git.Repo(os.path.dirname(os.path.realpath(__file__)))
 	for submodule in repo.submodules:
 		submodule.update(init=True)
 
