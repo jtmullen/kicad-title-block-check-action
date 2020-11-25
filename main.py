@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from subprocess import check_call, CalledProcessError
 import os
 import yaml
