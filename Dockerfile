@@ -9,4 +9,4 @@ RUN pip install PyYAML
 
 ADD main.py /main.py
 
-CMD ["/main.py"]
+ENTRYPOINT ["/main.py"]
