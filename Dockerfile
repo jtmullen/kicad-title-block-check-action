@@ -3,9 +3,8 @@ FROM alpine:3.10
 RUN ls
 
 COPY main.py /main.py
-COPY kicad_parser/ /kicad_parser/
-COPY .git/ /.git/
 
+RUN ls
 RUN apk --no-cache add git
 RUN apk add python3
 RUN apk add py3-pip
