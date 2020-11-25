@@ -13,3 +13,4 @@ RUN pip3 install --target=/app PyYAML
 
 ENV PYTHONPATH /app
 CMD ["/app/main.py"]
+ENTRYPOINT ["python3"]
