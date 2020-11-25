@@ -15,5 +15,5 @@ RUN cd kicad_parser \
 && git submodule update --init
 RUN ls
 
-CMD ["main.py"]
+CMD ["/main.py"]
 ENTRYPOINT ["python3"]
