@@ -6,8 +6,8 @@ WORKDIR /app
 RUN apk --no-cache add git
 RUN apk add python3
 RUN apk add py3-pip
-RUN pip install --target=/app gitpython
-RUN pip install --target=/app PyYAML
+RUN pip3 install --target=/app gitpython
+RUN pip3 install --target=/app PyYAML
 
 
 
