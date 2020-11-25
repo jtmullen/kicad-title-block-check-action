@@ -7,6 +7,6 @@ RUN apt-get update \
 RUN pip install gitpython
 RUN pip install PyYAML
 
-ADD entrypoint.py /entrypoint.py
+ADD main.py /main.py
 
-CMD ["/entrypoint.py"]
+CMD ["/main.py"]
