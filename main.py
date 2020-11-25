@@ -9,12 +9,9 @@ import git
 checkPCB = False
 checkSCH = False
 failed = ""
-GITHUB_WORKSPACE="C:/Users/Jonathan/repos/personal/kicad-title-block-check-action"
-CONFIG_FILE="test/config.yml"
-CHECK_ALL="false"
-GITHUB_EVENT_PATH="C:/Users/Jonathan/repos/personal/kicad-title-block-check-action/test/event.json"
-
 fields = ['pageSize','title','company','rev','date','comment1','comment2','comment3','comment4']
+
+print(os.environ)
 
 def error(cause):
 	print("::error::{}".format(cause))
@@ -30,7 +27,7 @@ def fail(fileName, cause):
 print("::group::Set Up")
 
 try:
-	eventStream = open(GITHUB_EVENT_PATH, 'r')
+	eventStream = open(os.environ["GITHUB_EVENT_PATH"], 'r')
 except OSError:
 	error("Could not Open Github Event Payload")
 
@@ -50,11 +47,11 @@ print("Run for PR#: {} in {} by {}".format(prNum, repoName, prUser))
 print("Branch {} into base {}".format(prBranch, prBase))
 
 try:
-	os.chdir(GITHUB_WORKSPACE)
+	os.chdir(os.environ["GITHUB_WORKSPACE"])
 except OSError:
 	error("Could not change to GitHub Workspace")
 
-regexFile = CONFIG_FILE
+regexFile = os.environ["INPUT_CONFIG_FILE"]
 print("Input file from: {}".format(regexFile))
 
 try:
@@ -84,25 +81,31 @@ if "schematic" in config:
 pcbsToCheck = []
 schToCheck = []
 
-if CHECK_ALL != "false":
+if os.environ["INPUT_CHECK_ALL"] != "false":
 	print("Checking all files in Repo")
 	allFiles = list(Path(".").rglob("*.*"))
+	for file in allFiles:
+		if checkPCB and file.name.endswith(".kicad_pcb"):
+			pcbsToCheck.append(str(file))
+		elif checkSCH and file.name.endswith(".sch"):
+			schToCheck.append(str(file))
 else:
 	print("Checking Changed Files")
 	format = '--name-only'
 	allFiles = []
-	repo = git.Git(GITHUB_WORKSPACE)
+	repo = git.Git(os.environ["GITHUB_WORKSPACE"])
 	diffed = repo.diff('%s...%s' % (prBase, prBranch), format).split('\n')
 	for line in diffed:
 		if len(line):
 			allFiles.append(line)
+	for file in allFiles:
+		if checkPCB and file.endswith(".kicad_pcb"):
+			pcbsToCheck.append(file)
+		elif checkSCH and file.endswith(".sch"):
+			schToCheck.append(file)
 
 
-for file in allFiles:
-	if checkPCB and file.name.endswith(".kicad_pcb"):
-		pcbsToCheck.append(str(file))
-	elif checkSCH and file.name.endswith(".sch"):
-		schToCheck.append(str(file))
+
 
 print(pcbsToCheck)
 print("::endgroup::")

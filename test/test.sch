@@ -5,7 +5,7 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 7
-Title "My Schematic
+Title "My Schematic"
 Date ""
 Rev "7.0"
 Comp "My Company"

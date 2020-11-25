@@ -1,7 +1,14 @@
-FROM alpine:3.11
+FROM python:3-slim AS builder
+ADD . /app
+WORKDIR /app
 
-RUN apk --no-cache add git
-RUN apk --no-cache add jq
+# We are installing a dependency here directly into our app source dir
+# RUN pip install --target=/app gitpython
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+# A distroless container image with Python and some basics like SSL certificates
+# https://github.com/GoogleContainerTools/distroless
+FROM gcr.io/distroless/python3-debian10
+COPY --from=builder /app /app
+WORKDIR /app
+ENV PYTHONPATH /app
+CMD ["/app/main.py"]
