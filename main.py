@@ -154,7 +154,7 @@ def main():
 						if field in pcb_checks:
 							if field in pcb.title_block:
 								if not re.match(pcb_checks[field], pcb.title_block[field].strip("\"")):
-									fail(file, "{}: {}, does not match {}".format(field, pcb.title_block[field], pcb_checks[field])) 
+									fail(file, "{}: \"{}\", does not match \"{}\"".format(field, pcb.title_block[field], pcb_checks[field])) 
 							else:
 								fail(file, "{} not found, expected match: {}".format(field, pcb_checks[field]))
 				
@@ -170,7 +170,7 @@ def main():
 								
 					for i in range(0,4):
 						if not re.match(pcbCommentRegex[i], comments[i].strip("\"")):
-							fail(file, "Comment {}: {}, does not match {}".format(i+1, comments[i], pcbCommentRegex[i]))
+							fail(file, "Comment {}: \"{}\", does not match \"{}\"".format(i+1, comments[i], pcbCommentRegex[i]))
 				else:
 					fail(file, "Title Block Not Found")
 		print("::endgroup::")
@@ -226,7 +226,7 @@ def main():
 							if re.match("{} \"(.*)\"".format(schFieldMaps[field]), line):
 								match = re.match("{} \"(.*)\"".format(schFieldMaps[field]), line)
 								if not re.match(sch_checks[field], match.group(1)):
-									fail(file, "{}: {}, does not match: {}".format(field, match.group(1), sch_checks[field]))
+									fail(file, "{}: \"{}\", does not match: \"{}\"".format(field, match.group(1), sch_checks[field]))
 								thisCheck[field] = False
 								break
 							

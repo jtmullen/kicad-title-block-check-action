@@ -1,4 +1,3 @@
-# ADD documentation label to everything with a documentation included
 pcb:
     pageSize: "USLetter"
     company: "Your Company"
