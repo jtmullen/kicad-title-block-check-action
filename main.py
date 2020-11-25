@@ -5,6 +5,7 @@ import os
 import json
 from pathlib import Path
 import git
+import sys
 
 checkPCB = False
 checkSCH = False
@@ -23,6 +24,7 @@ def fail(fileName, cause):
 		failed += ","
 
 def main():
+	print(sys.version)
 	print("::group::Set Up")
 
 	try:
