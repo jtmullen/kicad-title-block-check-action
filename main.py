@@ -29,7 +29,7 @@ def main():
 	print("Checkout submodule repo")
 	
 	actionRepo = git.repo(os.path.dirname(os.path.realpath(__file__)))
-	for submodule in repo.submodules
+	for submodule in repo.submodules:
 		submodule.update(init=True)
 
 	try:
