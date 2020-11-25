@@ -4,12 +4,15 @@ import re
 import os
 import json
 from pathlib import Path
-from git import Repo
+import git
 
 checkPCB = False
 checkSCH = False
 failed = ""
-GITHUB_WORKSPACE="test"
+GITHUB_WORKSPACE="C:/Users/Jonathan/repos/personal/kicad-title-block-check-action"
+CONFIG_FILE="test/config.yml"
+CHECK_ALL="false"
+GITHUB_EVENT_PATH="C:/Users/Jonathan/repos/personal/kicad-title-block-check-action/test/event.json"
 
 fields = ['pageSize','title','company','rev','date','comment1','comment2','comment3','comment4']
 
@@ -27,25 +30,44 @@ def fail(fileName, cause):
 print("::group::Set Up")
 
 try:
+	eventStream = open(GITHUB_EVENT_PATH, 'r')
+except OSError:
+	error("Could not Open Github Event Payload")
+
+eventInfo = json.load(eventStream)
+eventStream.close()
+
+if not "pull_request" in eventInfo:
+	error("Event is not a PR")
+
+repoName = eventInfo['repository']['full_name']
+prNum = eventInfo['pull_request']['number']
+prBranch = eventInfo['pull_request']['head']['ref']
+prBase = eventInfo['pull_request']['base']['ref']
+prUser = eventInfo['pull_request']['user']['login']
+
+print("Run for PR#: {} in {} by {}".format(prNum, repoName, prUser))
+print("Branch {} into base {}".format(prBranch, prBase))
+
+try:
 	os.chdir(GITHUB_WORKSPACE)
 except OSError:
 	error("Could not change to GitHub Workspace")
 
-regexFile = "labeler.yml"
+regexFile = CONFIG_FILE
+print("Input file from: {}".format(regexFile))
 
 try:
-	stream = open(regexFile, 'r')
+	regexStream = open(regexFile, 'r')
 except OSError:
 	error("Could not open the Config File at: {}".format(regexFile))
 
 try:
-	config = yaml.safe_load(stream)
+	config = yaml.safe_load(regexStream)
 except yaml.YAMLError:
 	error("Could not parse the yaml config file")
 
-repo = Repo('''C:/Users/Jonathan/repos/personal/kicad-title-block-check-action''')
-print(repo.git.diff("python_rewrite", "master"))
-error("Done")
+regexStream.close()
 
 if "pcb" in config:
 	checkPCB = True
@@ -62,15 +84,27 @@ if "schematic" in config:
 pcbsToCheck = []
 schToCheck = []
 
-allFiles = list(Path(".").rglob("*.*"))
+if CHECK_ALL != "false":
+	print("Checking all files in Repo")
+	allFiles = list(Path(".").rglob("*.*"))
+else:
+	print("Checking Changed Files")
+	format = '--name-only'
+	allFiles = []
+	repo = git.Git(GITHUB_WORKSPACE)
+	diffed = repo.diff('%s...%s' % (prBase, prBranch), format).split('\n')
+	for line in diffed:
+		if len(line):
+			allFiles.append(line)
+
 
 for file in allFiles:
-	if checkPCB and ".kicad_pcb" in file.name:
-		pcbsToCheck.append(file.name)
-	elif checkSCH and ".sch" in file.name:
-		schToCheck.append(file.name)
+	if checkPCB and file.name.endswith(".kicad_pcb"):
+		pcbsToCheck.append(str(file))
+	elif checkSCH and file.name.endswith(".sch"):
+		schToCheck.append(str(file))
 
-	
+print(pcbsToCheck)
 print("::endgroup::")
 
 if not pcbsToCheck:
@@ -107,27 +141,30 @@ else:
 				else:
 					fail(file, "Page size not found")
 			
-			for field in ["title", "rev", "company", "date"]:
-				if field in pcb_checks:
-					if field in pcb.title_block:
-						if not re.match(pcb_checks[field], pcb.title_block[field].strip("\"")):
-							fail(file, "{}: {}, does not match {}".format(field, pcb.title_block[field], pcb_checks[field])) 
-					else:
-						fail(file, "{} not found, expected match: {}".format(field, pcb_checks[field]))
-		
-			comments = ["", "", "", ""]
+			if "title_block" in pcb:
+				for field in ["title", "rev", "company", "date"]:
+					if field in pcb_checks:
+						if field in pcb.title_block:
+							if not re.match(pcb_checks[field], pcb.title_block[field].strip("\"")):
+								fail(file, "{}: {}, does not match {}".format(field, pcb.title_block[field], pcb_checks[field])) 
+						else:
+							fail(file, "{} not found, expected match: {}".format(field, pcb_checks[field]))
 			
-			if "comment" in pcb.title_block:
-				pcbComments = pcb.title_block.comment
-				if isinstance(pcbComments, list):
-					comments[pcbComments[0]-1] = pcbComments[1]
-				else:
-					for item in pcbComments:
-						comments[item[0]-1] = item[1]
-						
-			for i in range(0,4):
-				if not re.match(pcbCommentRegex[i], comments[i].strip("\"")):
-					fail(file, "Comment {}: {}, does not match {}".format(i+1, comments[i], pcbCommentRegex[i]))
+				comments = ["", "", "", ""]
+				
+				if "comment" in pcb.title_block:
+					pcbComments = pcb.title_block.comment
+					if isinstance(pcbComments, list):
+						comments[pcbComments[0]-1] = pcbComments[1]
+					else:
+						for item in pcbComments:
+							comments[item[0]-1] = item[1]
+							
+				for i in range(0,4):
+					if not re.match(pcbCommentRegex[i], comments[i].strip("\"")):
+						fail(file, "Comment {}: {}, does not match {}".format(i+1, comments[i], pcbCommentRegex[i]))
+			else:
+				fail(file, "Title Block Not Found")
 	print("::endgroup::")
 	
 if not schToCheck:
@@ -154,13 +191,17 @@ else:
 		else:
 			print("::warning file={}::Unknown Schematic Field: {}".format(regexFile, field))
 
-#fields = ['pageSize','title','company','rev','date','comment1','comment2','comment3','comment4']
 	for file in schToCheck:
 		print("Checking Schematic: {}".format(file))
 
 		thisCheck = schExpectedFields
 		descrFound = False
-		f = open(file, 'r')
+		
+		try:
+			f = open(file, 'r')
+		except OSError:
+			fail(file, "Error Opening File")
+			break;
 		lines = f.readlines()
 		for line in lines:
 			if "$Descr" in line:
@@ -184,5 +225,14 @@ else:
 		for field in schExpectedFields:
 			if schExpectedFields[field]:
 				fail(file, "Field {} Not Found in Schematic".format(field))
-			
+		
+		f.close()
 	print("::endgroup::")
+
+print("::set-output name=fails::{}".format(failed))
+
+if failed:
+	exit(1)
+
+print("All Checks Passed!")
+exit(0)
