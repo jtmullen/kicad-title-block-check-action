@@ -8,6 +8,9 @@ RUN pip3 install gitpython
 RUN pip3 install PyYAML
 RUN git submodule update --init
 
+COPY .git/ /.git/
+COPY main.py /main.py
+COPY kicad_parser/ /kicad_parser/
 
 CMD ["main.py"]
 ENTRYPOINT ["python3"]
