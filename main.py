@@ -1,4 +1,3 @@
-from kicad_parser import KicadPCB
 import yaml
 import re
 import os
@@ -24,8 +23,19 @@ def fail(fileName, cause):
 		failed += ","
 
 def main():
-	print(sys.version)
 	print("::group::Set Up")
+	print("Python Version: {}".format(sys.version))
+
+	print("Checkout submodule repo")
+	
+	actionRepo = git.repo(os.path.dirname(os.path.realpath(__file__)))
+	for submodule in repo.submodules
+		submodule.update(init=True)
+
+	try:
+		from kicad_parser import KicadPCB
+	except ImportError:
+		error("Error importing KiCad PCB Dependency")
 
 	try:
 		eventStream = open(os.environ["GITHUB_EVENT_PATH"], 'r')
