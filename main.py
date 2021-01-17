@@ -53,7 +53,7 @@ def main():
 		print("Run for PR#: {} in {} by {}".format(prNum, repoName, prUser))
 		print("Branch {} into base {}".format(prBranch, prBase))
 		isPR = True
-	else if "after" in eventInfo:
+	elif "after" in eventInfo:
 		toHash = eventInfo['after']
 		fromHash = eventInfo['before']
 		branchName = eventInfo['ref']
