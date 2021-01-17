@@ -42,17 +42,25 @@ def main():
 	eventInfo = json.load(eventStream)
 	eventStream.close()
 
-	if not "pull_request" in eventInfo:
-		error("Event is not a PR")
-
 	repoName = eventInfo['repository']['full_name']
-	prNum = eventInfo['pull_request']['number']
-	prBranch = eventInfo['pull_request']['head']['ref']
-	prBase = eventInfo['pull_request']['base']['ref']
-	prUser = eventInfo['pull_request']['user']['login']
 
-	print("Run for PR#: {} in {} by {}".format(prNum, repoName, prUser))
-	print("Branch {} into base {}".format(prBranch, prBase))
+	isPR = False
+	if "pull_request" in eventInfo:
+		prNum = eventInfo['pull_request']['number']
+		prBranch = eventInfo['pull_request']['head']['ref']
+		prBase = eventInfo['pull_request']['base']['ref']
+		prUser = eventInfo['pull_request']['user']['login']
+		print("Run for PR#: {} in {} by {}".format(prNum, repoName, prUser))
+		print("Branch {} into base {}".format(prBranch, prBase))
+		isPR = True
+	else if "after" in eventInfo:
+		toHash = eventInfo['after']
+		fromHash = eventInfo['before']
+		branchName = eventInfo['ref']
+		print("Run for push on branch: {}".format(branchName))
+		print("Hash {} to {}".format(fromHash, toHash))
+	else:
+		error("Not push or pull request event")
 
 	try:
 		os.chdir(os.environ["GITHUB_WORKSPACE"])
@@ -73,18 +81,25 @@ def main():
 		error("Could not parse the yaml config file")
 
 	regexStream.close()
-
-	if "pcb" in config:
+	
+	if "all" in config:
 		checkPCB = True
-		print("Checking PCBs for:")
-		pcb_checks = config['pcb']
-		print(pcb_checks)
-		
-	if "schematic" in config:
 		checkSCH = True
-		print("Checking schematics for:")
-		sch_checks = config['schematic']
-		print(sch_checks)
+		pcb_checks = sch_checks = config['all']
+		print("Checking PCBs and Schematics for:")
+		print(pcb_checks)
+	else: 
+		if "pcb" in config:
+			checkPCB = True
+			print("Checking PCBs for:")
+			pcb_checks = config['pcb']
+			print(pcb_checks)
+			
+		if "schematic" in config:
+			checkSCH = True
+			print("Checking schematics for:")
+			sch_checks = config['schematic']
+			print(sch_checks)
 
 	pcbsToCheck = []
 	schToCheck = []
@@ -102,7 +117,10 @@ def main():
 		format = '--name-only'
 		allFiles = []
 		repo = git.Git(os.environ["GITHUB_WORKSPACE"])
-		diffed = repo.diff('origin/%s...origin/%s' % (prBase, prBranch), format).split('\n')
+		if isPR:
+			diffed = repo.diff('origin/%s...origin/%s' % (prBase, prBranch), format).split('\n')
+		else:
+			diffed = repo.diff('%s...%s' % (fromHash, toHash), format).split('\n')
 		for line in diffed:
 			if len(line):
 				allFiles.append(line)
