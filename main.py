@@ -88,8 +88,8 @@ def main():
 	if "all" in config:
 		checkPCB = True
 		checkSCH = True
-		pcb_checks = config['all']
-		sch_checks = config['all']
+		pcb_checks = config['all'].copy()
+		sch_checks = config['all'].copy()
 		print("Check PCB for:")
 		print(pcb_checks)
 		print("Schematic Checks is:")
