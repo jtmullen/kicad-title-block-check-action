@@ -121,12 +121,10 @@ def main():
 	
 	if checkPCB:
 		print("Checking PCBs for:")
-		pcb_checks = config['pcb']
 		print(pcb_checks)
 		
 	if checkSCH:
 		print("Checking schematics for:")
-		sch_checks = config['schematic']
 		print(sch_checks)
 
 	pcbsToCheck = []
