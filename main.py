@@ -90,8 +90,10 @@ def main():
 		checkSCH = True
 		pcb_checks = config['all']
 		sch_checks = config['all']
-		print("Check all for:")
+		print("Check PCB for:")
 		print(pcb_checks)
+		print("Schematic Checks is:")
+		print(sch_checks)
 	
 	if "pcb" in config:
 		print("PCB Checks is:")
