@@ -88,9 +88,8 @@ def main():
 	if "all" in config:
 		checkPCB = True
 		checkSCH = True
-		pcb_checks = sch_checks = config['all']
-		print("All for:")
-		print(config['all'])
+		pcb_checks = config['all']
+		sch_checks = config['all']
 	
 	if "pcb" in config:
 		checkPCB = True
