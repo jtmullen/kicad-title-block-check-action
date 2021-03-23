@@ -93,15 +93,15 @@ def main():
 			if key in pcb_checks:
 				print("::warning file={}::Field {} specified for ALL and PCB", key)
 			else:
-				pcb_checks[key] = config[pcb][key]
+				pcb_checks[key] = config["pcb"][key]
 						
 	if "schematic" in config:
 		checkSCH = True
-		for key in config['sch']:
+		for key in config['schematic']:
 			if key in sch_checks:
-				print("::warning file={}::Field {} specified for ALL and sch", key)
+				print("::warning file={}::Field {} specified for ALL and schematic", key)
 			else:
-				sch_checks[key] = config[sch][key]
+				sch_checks[key] = config["schematic"][key]
 	
 	if checkPCB:
 		print("Checking PCBs for:")
