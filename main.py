@@ -86,20 +86,32 @@ def main():
 		checkPCB = True
 		checkSCH = True
 		pcb_checks = sch_checks = config['all']
-		print("Checking PCBs and Schematics for:")
+	
+	if "pcb" in config:
+		checkPCB = True
+		for key in config['pcb']:
+			if key in pcb_checks:
+				print("::warning file={}::Field {} specified for ALL and PCB", key)
+			else:
+				pcb_checks[key] = config[pcb][key]
+						
+	if "schematic" in config:
+		checkSCH = True
+		for key in config['sch']:
+			if key in sch_checks:
+				print("::warning file={}::Field {} specified for ALL and sch", key)
+			else:
+				sch_checks[key] = config[sch][key]
+	
+	if checkPCB:
+		print("Checking PCBs for:")
+		pcb_checks = config['pcb']
 		print(pcb_checks)
-	else: 
-		if "pcb" in config:
-			checkPCB = True
-			print("Checking PCBs for:")
-			pcb_checks = config['pcb']
-			print(pcb_checks)
-			
-		if "schematic" in config:
-			checkSCH = True
-			print("Checking schematics for:")
-			sch_checks = config['schematic']
-			print(sch_checks)
+		
+	if checkSCH:
+		print("Checking schematics for:")
+		sch_checks = config['schematic']
+		print(sch_checks)
 
 	pcbsToCheck = []
 	schToCheck = []
