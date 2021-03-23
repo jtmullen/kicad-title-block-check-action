@@ -82,16 +82,21 @@ def main():
 
 	regexStream.close()
 	
+	print("Config is:")
+	print(config)
+	
 	if "all" in config:
 		checkPCB = True
 		checkSCH = True
 		pcb_checks = sch_checks = config['all']
+		print("All for:")
+		print(config['all'])
 	
 	if "pcb" in config:
 		checkPCB = True
 		for key in config['pcb']:
 			if key in pcb_checks:
-				print("::warning file={}::Field {} specified for ALL and PCB", key)
+				print("::warning::Field {} specified for ALL and PCB".format(key))
 			else:
 				pcb_checks[key] = config["pcb"][key]
 						
@@ -99,7 +104,7 @@ def main():
 		checkSCH = True
 		for key in config['schematic']:
 			if key in sch_checks:
-				print("::warning file={}::Field {} specified for ALL and schematic", key)
+				print("::warning::Field {} specified for ALL and schematic".format(key))
 			else:
 				sch_checks[key] = config["schematic"][key]
 	
