@@ -1,0 +1,11 @@
+pcb:
+    pageSize: "USLetter"
+    company: "Your Company"
+    title: "(.+)"
+    comment1: "Designed (B|b)y: (.+)"
+    date: "[0-9]{4}-(0[0-9]|1[0-2])-[0-3][0-9]"
+schematic:
+    title: "(.+)"
+    pageSize: "USLetter"
+    company: "Your Company"
+    

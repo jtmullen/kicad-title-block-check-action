@@ -1,44 +1,48 @@
 # kicad-title-block-check-action
-An action to check the the title block on KiCad schematics and/or PCBs meet specified requirements.
-Currently, these requirements can only be specified using regex, however in the future it may allow requirements based on the things such as the file or directory name. 
+An action to check the the title block on KiCad schematics and/or PCBs meet specified requirements. This can be used to enforce stylistic conventions for page size, titles, dates, revisions, etc. The action can only be run on a Pull Request or a push, otherwise it will fail. Currently, these requirements can be specified using regex.
 
-*Please note: This is made for **KiCad v5** files. Additionally, the KiCad file types are not very stricly defined so this operates on my understanding from the spec (which doesn't address title blocks much) and my experimentation. If you find KiCad behaviors I don't cover please open an issue! Patches are always welcome*
+*Please note: This is made for **KiCad v5** files, a v6 version will follow for the schematic file type update. Additionally, the KiCad file types are not very stricly defined so this operates on my understanding from the spec (which doesn't address title blocks much) and my experimentation. If you find KiCad behaviors I don't cover please open an issue! PRs are always welcome*
 
 ## Inputs
-*All* inputs to this action are optional. So just include the ones you care about! If you don't include any it will just check that your files have title blocks I suppose. 
-### `onlyChanged`
-Whether this action should check all files or just those changed in the this PR or Push. Defaults to false. Set to anything else (`true` would make the most sense) to only check changed files.
+Both Inputs are Optional. 
 
-### `checkSchematics`
-Whether to check schematic files. Defaults to true. Change to anything else (`false` would make the most sense) to not check schematics.
+### `check_all`
+If you want to check all files in the repo, instead of just those changed on the PR/push. By default this is "false", change to "true" if you want all files checked. 
 
-### `checkPCBs`
-Whether to check PCB files. Defaults to true. Change to anything else (`false` would make the most sense) to not check PCBs.
+### `config_file`
+This is the path to the config file for the check. By default it is `.github/title-blocks.yml`. Include a different path if you want to put the config file somewhere else. 
 
-### Regex Inputs
-The following inputs set the regex for each of the fields. The field must be given a `sch` or `pcb` prefix which indicates if it is the regex for the schematic or PCB. So, for example, the `TitleRegex` should be used as `schTitleRegex` and/or `pcbTitleRegex`.
+## Config File
+The config File is a yml file that specifies the regex to use for the checks. For all fields, except page size, since they can be anything a user would type the action extracts the field and makes sure that it matches in entirely. For page size, since KiCad stores both the name and dimensions, the action just searches for the input in the field - you therefore can just specify the name such as "USLetter" or "A4". 
 
-The Schematic ones default to `'(.*)'` allowing anything while the PCB ones default to `''`. This difference is because the schematic file includes the empty fields while the PCB leaves it out. 
+Any fields you leave out will not be checked - if you want a field to be empty you need to specify that. 
 
-#### `PageSizeRegex`
-Page Size Field
-#### `TitleRegex`
-Title Field
-#### `DateRegex`
-Date Field
-#### `RevRegex`
-Revision Field
-#### `CompRegex`
-Company Field
-#### `CommentXRegex`
-Comment Fields for X [1..4]
+Specify the checks for `pcb`, `schematic`, or both depending on what you want check as shown below. Any of the top level keys (all, schematic, pcb) can be omitted. 
+
+### Example Config File
+
+```yml
+all:
+  pageSize: "USLetter"
+  company: "Your Company"
+  title: "(.+)"
+  rev: "[0-9].[0-9]"
+  date: "[0-9]{4}-(0[0-9]|1[0-2])-[0-3][0-9]"
+schematic:
+  comment1: "Schematic Designer: (.*)"
+pcb:
+  comment1: "Layout Designer: (.*)"
+  comment2: ""
+  comment3: ""
+  comment4: "" 
+```
+
+The above config file would do the same checks for each, except for comments. Comment 1 differs in text between them. Comments 2-4 in the schematic could be anything, while in the pcb they would be enforced as empty. 
 
 ## Outputs
 ### `fails`
-A list of files that failed the title block check.
+A comma separated list of files that failed the title block check.
 
-### `percent`
-The percent of checked files that passed the title block check.
 
 ## Usage
 To add this action to your repo create a workflow file (such as `.github/workflows/check-title-blocks.yml`) with the following content adjusted for your needs. The following example checks the changed files to make sure they have the company name and use US Letter page size.
@@ -49,29 +53,24 @@ name: check-kicad-title-blocks
 on: [push, pull_request]
 
 jobs:
-    check-title-blocks:
-        name: Check Title Blocks
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Check Title Blocks
-          uses: jtmullen/kicad-title-block-check-action@v0-beta
-          with:
-            onlyChanged: true
-            schPageSizeRegex: "US Letter"
-            schCompRegex: "Company Name"
-            pcbPageSizeRegex: "US Letter"
-            pcbCompRegex: "Company Name"
+  check-title-blocks:
+    name: Check Title Blocks
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Check Title Blocks
+      uses: jtmullen/kicad-title-block-check-action@v1-preview
 ```
 
 You can also see [where this is used](https://github.com/search?l=YAML&q=kicad-title-block-check-action&type=Code)
 
-*Note: this was developed for several private repos so many uses will not be listed above*
+*Note: this was developed for private repos, so it is in use in more places than will show above*
 
 ## TODOs
 Potential improvements
-- [ ] Allow inputs to be used in both sch and pcb
 - [ ] Use path and/or file names in checking
 - [ ] Blacklist or Whitelist directories to check
-- [ ] Check first line of file for KiCad version
+- [ ] Add v6 schematic support
