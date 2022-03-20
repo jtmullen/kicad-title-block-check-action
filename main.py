@@ -54,7 +54,7 @@ def checkSExpBlock(checks, commentRegex, sexp, file):
 	for field in ["title", "rev", "company", "date"]:
 		if field in checks:
 			if field in sexp.title_block:
-				if not re.match(checks[field], sexp.title_block[field].strip("\"")):
+				if not re.match(checks[field], str(sexp.title_block[field]).strip("\"")):
 					fail(file, "{}: \"{}\", does not match \"{}\"".format(field, sexp.title_block[field], checks[field])) 
 			else:
 				fail(file, "{} not found, expected match: {}".format(field, checks[field]))
@@ -70,7 +70,7 @@ def checkSExpBlock(checks, commentRegex, sexp, file):
 				comments[item[0]-1] = item[1]
 				
 	for i in range(0,len(comments)):
-		if not re.match(commentRegex[i], comments[i].strip("\"")):
+		if not re.match(commentRegex[i], str(comments[i]).strip("\"")):
 			fail(file, "Comment {}: \"{}\", does not match \"{}\"".format(i+1, comments[i], commentRegex[i]))
 
 
