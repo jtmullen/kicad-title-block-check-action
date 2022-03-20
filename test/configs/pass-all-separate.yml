@@ -1,0 +1,19 @@
+## All test files meet these requirements
+
+sch:
+    company: "My Company"
+    title: "My Schematic"
+    pageSize: USLetter
+    rev: "[0-9].[0-9]"
+    date: "[0-9]{4}-(0[0-9]|1[0-2])-[0-3][0-9]"
+    comment1: "Designed By: (.*)"
+    comment3: ""
+pcb:
+    company: "My Company"
+    title: "My PCB"
+    pageSize: "A4"
+    rev: "[0-9].[0-9]"
+    date: "[0-9]{4}-(0[0-9]|1[0-2])-[0-3][0-9]"
+    comment1: "Designed By: (.*)"
+    comment3: ""
+    

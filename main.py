@@ -45,7 +45,7 @@ def checkSExpBlock(checks, commentRegex, sexp, file):
 				size = sexp.page
 			else:
 				size = sexp.paper
-			if not pcb_checks["pageSize"] in size:
+			if not checks["pageSize"] in size:
 				fail(file, "Expected Page Size {}, found {}".format(checks["pageSize"], size))
 		else:
 			fail(file, "Page size not found")
@@ -54,7 +54,7 @@ def checkSExpBlock(checks, commentRegex, sexp, file):
 	for field in ["title", "rev", "company", "date"]:
 		if field in checks:
 			if field in sexp.title_block:
-				if not re.match(checks[field], sexp.title_block[field].strip("\"")):
+				if not re.match(checks[field], str(sexp.title_block[field]).strip("\"")):
 					fail(file, "{}: \"{}\", does not match \"{}\"".format(field, sexp.title_block[field], checks[field])) 
 			else:
 				fail(file, "{} not found, expected match: {}".format(field, checks[field]))
@@ -70,21 +70,23 @@ def checkSExpBlock(checks, commentRegex, sexp, file):
 				comments[item[0]-1] = item[1]
 				
 	for i in range(0,len(comments)):
-		if not re.match(commentRegex[i], comments[i].strip("\"")):
+		if not re.match(commentRegex[i], str(comments[i]).strip("\"")):
 			fail(file, "Comment {}: \"{}\", does not match \"{}\"".format(i+1, comments[i], commentRegex[i]))
 
 
-## Main function to run checks
+## Main function to setup, find files, and run checks
 def main():
 	print("::group::Set Up")
-	print("Python Version: {}".format(sys.version))
+	print("::debug::Python Version: {}".format(sys.version))
 
+	## Import our local dependencies
 	try:
 		from kicad_parser import KicadPCB
 		from kicad_parser import KicadSCH
 	except ImportError:
 		error("Error importing KiCad Parser Dependency")
 
+	## Get the payload with info on what we are doing from Github
 	try:
 		eventStream = open(os.environ["GITHUB_EVENT_PATH"], 'r')
 	except OSError:
@@ -95,6 +97,7 @@ def main():
 
 	repoName = eventInfo['repository']['full_name']
 
+	## Figure out what we are running on
 	isPR = False
 	if "pull_request" in eventInfo:
 		prNum = eventInfo['pull_request']['number']
@@ -118,6 +121,7 @@ def main():
 	except OSError:
 		error("Could not change to GitHub Workspace")
 
+	## Get the config file
 	regexFile = os.environ["INPUT_CONFIG_FILE"]
 	print("Input file from: {}".format(regexFile))
 
@@ -133,42 +137,41 @@ def main():
 
 	regexStream.close()
 	
+	## Parse the Config File
 	print("Config is:")
 	print(config)
+	pcb_checks = {}
+	sch_checks = {}
+	checkSCH = False
+	checkPCB = False
 	
 	if "all" in config:
 		checkPCB = True
 		checkSCH = True
 		pcb_checks = config['all'].copy()
 		sch_checks = config['all'].copy()
-		print("Check PCB for:")
-		print(pcb_checks)
-		print("Schematic Checks is:")
-		print(sch_checks)
+		print("::debug::PCB Checks is: " + str(pcb_checks))
+		print("::debug::Schematic Checks is: " + str(sch_checks))
 	
 	if "pcb" in config:
-		print("PCB Checks is:")
-		print(pcb_checks)
+		print("::debug::PCB Checks is: " + str(pcb_checks))
 		checkPCB = True
 		for key in config['pcb']:
 			if key in pcb_checks:
 				print("::warning::Field {} specified for ALL and PCB".format(key))
 			else:
 				pcb_checks[key] = config["pcb"][key]
-		print("PCB Checks is:")
-		print(pcb_checks)
+		print("::debug::PCB Checks is: " + str(pcb_checks))
 						
-	if "schematic" in config:
-		print("Schematic Checks is:")
-		print(sch_checks)
+	if "sch" in config:
+		print("::debug::Schematic Checks is: " + str(sch_checks))
 		checkSCH = True
-		for key in config['schematic']:
+		for key in config['sch']:
 			if key in sch_checks:
 				print("::warning::Field {} specified for ALL and schematic".format(key))
 			else:
-				sch_checks[key] = config["schematic"][key]
-		print("Schematic Checks is:")
-		print(sch_checks)
+				sch_checks[key] = config["sch"][key]
+		print("::debug::Schematic Checks is: " + str(sch_checks))
 	
 	if checkPCB:
 		print("Checking PCBs for:")
@@ -178,9 +181,11 @@ def main():
 		print("Checking schematics for:")
 		print(sch_checks)
 
+
+	## Find the Files to Check
 	pcbsToCheck = []
 	schToCheck_v5 = []
-    schToCheck_v6 = []
+	schToCheck_v6 = []
 
 	if os.environ["INPUT_CHECK_ALL"] != "false":
 		print("Checking all files in Repo")
@@ -193,7 +198,7 @@ def main():
 			elif checkSCH and file.name.endswith(".sch"):
 				schToCheck_v5.append(str(file))
 	else:
-		print("Checking Changed Files")
+		print("Checking Changed Files Only")
 		format = '--name-only'
 		allFiles = []
 		repo = git.Git(os.environ["GITHUB_WORKSPACE"])
@@ -212,9 +217,13 @@ def main():
 			elif checkSCH and file.endswith(".sch"):
 				schToCheck_v5.append(file)
 
+	print("Checking PCBs: " + str(pcbsToCheck))
+	print("Checking v6 Schematics: " + str(schToCheck_v6))
+	print("Checking v5 Schematics: " + str(schToCheck_v5))
 
 	print("::endgroup::")
 
+	## Check PCBs
 	if not pcbsToCheck:
 		print("No PCBs to Check")
 	else:
@@ -240,7 +249,6 @@ def main():
 				pcbError = True
 			
 			if not pcbError:
-				# Check Page
 				if "title_block" in pcb:
 					checkSExpBlock(pcb_checks, pcbCommentRegex, pcb, file)
 					print("::endgroup::")
@@ -249,15 +257,18 @@ def main():
 					fail(file, "Title Block Not Found")
 		print("::endgroup::")
 		
+		
+	## Check Schematics
 	if not (schToCheck_v5 or schToCheck_v6):
 		print("No Schematics to Check")
 	else:
 		print("::group::Schematic Checks")
 		
-		for field in pcb_checks:
+		for field in sch_checks:
 			if field not in fields:
-				print("::warning file={}::Unknown PCB Field: {}".format(regexFile, field))
+				print("::warning file={}::Unknown Schematic Field: {}".format(regexFile, field))
 				
+		## v6 Schematics are S-Expressions
 		if schToCheck_v6:
 			print("::group::{}".format(file))
 
@@ -267,7 +278,7 @@ def main():
 			schCommentRegex.append("(.*)" if not "comment2" in sch_checks else sch_checks["comment2"])
 			schCommentRegex.append("(.*)" if not "comment3" in sch_checks else sch_checks["comment3"])
 			schCommentRegex.append("(.*)" if not "comment4" in sch_checks else sch_checks["comment4"])
-			for file in pcbsToCheck:
+			for file in schToCheck_v6:
 				print("::group::{}".format(file))
 				sch = KicadSCH.load(file)
 				schError = False
@@ -277,7 +288,6 @@ def main():
 					schError = True
 				
 				if not schError:
-					# Check Page
 					if "title_block" in sch:
 						checkSExpBlock(sch_checks, schCommentRegex, sch, file)
 						print("::endgroup::")
@@ -285,6 +295,7 @@ def main():
 						print("::endgroup::")
 						fail(file, "Title Block Not Found")
 		
+		## v5 Schematics are Custom KiCad Format, manually parse
 		if schToCheck_v5:
 			schFieldMaps = {'title':'Title',
 							'company':'Comp',

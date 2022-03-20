@@ -5,11 +5,12 @@ on: [push, pull_request]
 
 jobs:
     run_tests:
+        runs-on: ubuntu-latest
         name: Run All Tests
         steps:
         - name: Checkout Repo
           uses: actions/checkout@v2
-        
+        # All Files Pass with Same Requirements
         - name: All Files Pass
           uses: ./
           id: pass-all
@@ -18,3 +19,62 @@ jobs:
             config_file: "test/configs/pass-all.yml"
         - name: Verify Pass All
           run: test -z "${{ steps.pass-all.outputs.fails }}"
+         # All Files pass with separate PCB/SCH Requirements
+        - name: All Files Pass (Separate PCB/SCH)
+          uses: ./
+          id: pass-all-sep
+          with: 
+            check_all: true
+            config_file: "test/configs/pass-all-separate.yml"
+        - name: Verify Pass All Separate
+          run: test -z "${{ steps.pass-all-sep.outputs.fails }}"
+        # All Files Fail Due to Page Size
+        - name: All Fail Page Size
+          uses: ./
+          id: fail-all-page
+          continue-on-error: true
+          with: 
+            check_all: true
+            config_file: "test/configs/fail-all-pagesize.yml"
+        - name: Verify Fail All Page Size
+          run: test "${{ steps.fail-all-page.outputs.fails }}" = "test/kicad_files/test.kicad_pcb,test/kicad_files/test.kicad_sch,test/kicad_files/test.sch,"
+        # Fail Schematics Due to Comments
+        - name: Sch Fail Comment
+          uses: ./
+          id: fail-sch-comment
+          continue-on-error: true
+          with: 
+            check_all: true
+            config_file: "test/configs/sch-fail-comment.yml"
+        - name: Verify Sch Fail on Comment
+          run: test "${{ steps.fail-sch-comment.outputs.fails }}" = "test/kicad_files/test.kicad_sch,test/kicad_files/test.sch,"
+        # Fail All Due to Comments
+        - name: All Fail Comment
+          uses: ./
+          id: fail-all-comment
+          continue-on-error: true
+          with: 
+            check_all: true
+            config_file: "test/configs/all-fail-comment.yml"
+        - name: Verify All Fail on Comment
+          run: test "${{ steps.fail-all-comment.outputs.fails }}" = "test/kicad_files/test.kicad_pcb,test/kicad_files/test.kicad_sch,test/kicad_files/test.sch,"
+        # Fail PCB Due to Rev
+        - name: PCB Fail Rev
+          uses: ./
+          id: fail-pcb-rev
+          continue-on-error: true
+          with: 
+            check_all: true
+            config_file: "test/configs/pcb-fail-rev.yml"
+        - name: Verify PCB Fail on rev
+          run: test "${{ steps.fail-pcb-rev.outputs.fails }}" = "test/kicad_files/test.kicad_pcb,"
+        # PCB Fail, SCH Pass
+        - name: PCB Fail, Sch Pass
+          uses: ./
+          id: fail-pcb-pass-sch
+          continue-on-error: true
+          with: 
+            check_all: true
+            config_file: "test/configs/pcb-fail-sch-pass.yml"
+        - name: Verify PCB Fail & SCH Pass
+          run: test "${{ steps.fail-pcb-pass-sch.outputs.fails }}" = "test/kicad_files/test.kicad_pcb,"
