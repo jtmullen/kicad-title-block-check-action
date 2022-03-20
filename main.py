@@ -137,6 +137,8 @@ def main():
 	print(config)
 	pcb_checks = {}
 	sch_checks = {}
+	checkSCH = False
+	checkPCB = False
 	
 	if "all" in config:
 		checkPCB = True
@@ -160,7 +162,7 @@ def main():
 		print("PCB Checks is:")
 		print(pcb_checks)
 						
-	if "schematic" in config:
+	if "sch" in config:
 		print("Schematic Checks is:")
 		print(sch_checks)
 		checkSCH = True
