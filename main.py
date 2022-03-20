@@ -258,9 +258,9 @@ def main():
 	else:
 		print("::group::Schematic Checks")
 		
-		for field in pcb_checks:
+		for field in sch_checks:
 			if field not in fields:
-				print("::warning file={}::Unknown PCB Field: {}".format(regexFile, field))
+				print("::warning file={}::Unknown Schematic Field: {}".format(regexFile, field))
 				
 		if schToCheck_v6:
 			print("::group::{}".format(file))
@@ -271,7 +271,7 @@ def main():
 			schCommentRegex.append("(.*)" if not "comment2" in sch_checks else sch_checks["comment2"])
 			schCommentRegex.append("(.*)" if not "comment3" in sch_checks else sch_checks["comment3"])
 			schCommentRegex.append("(.*)" if not "comment4" in sch_checks else sch_checks["comment4"])
-			for file in pcbsToCheck:
+			for file in schToCheck_v6:
 				print("::group::{}".format(file))
 				sch = KicadSCH.load(file)
 				schError = False
