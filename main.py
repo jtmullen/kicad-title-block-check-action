@@ -216,6 +216,9 @@ def main():
 			elif checkSCH and file.endswith(".sch"):
 				schToCheck_v5.append(file)
 
+	print("Checking PCBs: " + str(pcbsToCheck))
+	print("Checking v6 Schematics: " + str(schToCheck_v6))
+	print("Checking v5 Schematics: " + str(schToCheck_v5))
 
 	print("::endgroup::")
 
