@@ -212,7 +212,7 @@ def main():
 		for file in allFiles:
 			if checkPCB and file.endswith(".kicad_pcb"):
 				pcbsToCheck.append(file)
-			elif checkSCH and file.name.endswith(".kicad_sch"):
+			elif checkSCH and file.endswith(".kicad_sch"):
 				schToCheck_v6.append(file)
 			elif checkSCH and file.endswith(".sch"):
 				schToCheck_v5.append(file)
