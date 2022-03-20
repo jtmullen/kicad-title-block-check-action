@@ -45,7 +45,7 @@ def checkSExpBlock(checks, commentRegex, sexp, file):
 				size = sexp.page
 			else:
 				size = sexp.paper
-			if not pcb_checks["pageSize"] in size:
+			if not checks["pageSize"] in size:
 				fail(file, "Expected Page Size {}, found {}".format(checks["pageSize"], size))
 		else:
 			fail(file, "Page size not found")
