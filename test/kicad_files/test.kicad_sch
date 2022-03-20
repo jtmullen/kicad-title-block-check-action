@@ -1,0 +1,23 @@
+(kicad_sch (version 20211123) (generator eeschema)
+
+  (uuid 9538e4ed-27e6-4c37-b989-9859dc0d49e8)
+
+  (paper "USLetter")
+
+  (title_block
+    (title "My Schematic")
+    (date "2022-03-19")
+    (rev "7.0")
+    (company "My Company")
+    (comment 1 "Designed By: Me")
+    (comment 2 "Another comment")
+  )
+
+  (lib_symbols
+  )
+
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)

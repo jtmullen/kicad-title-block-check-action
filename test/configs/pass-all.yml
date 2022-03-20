@@ -1,0 +1,9 @@
+## All 3 test files meet these requirements
+
+all:
+    company: "My Company"
+    title: "My (.*)"
+    rev: "[0-9].[0-9]"
+    date: "[0-9]{4}-(0[0-9]|1[0-2])-[0-3][0-9]"
+    comment1: "Designed By: (.*)"
+    

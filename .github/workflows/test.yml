@@ -1,0 +1,20 @@
+name: Title Block Action Tests
+on: [push, pull_request]
+
+# Some basic tests to ensure the check is still functional
+
+jobs:
+    run_tests:
+        name: Run All Tests
+        steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v2
+        
+        - name: All Files Pass
+          uses: ./
+          id: pass-all
+          with: 
+            check_all: true
+            config_file: "test/configs/pass-all.yml"
+        - name: Verify Pass All
+          run: test -z "${{ steps.pass-all.outputs.fails }}"
