@@ -180,7 +180,7 @@ def main():
 
 	pcbsToCheck = []
 	schToCheck_v5 = []
-    schToCheck_v6 = []
+	schToCheck_v6 = []
 
 	if os.environ["INPUT_CHECK_ALL"] != "false":
 		print("Checking all files in Repo")
