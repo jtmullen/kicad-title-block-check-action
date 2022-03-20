@@ -147,8 +147,6 @@ def main():
 		print(sch_checks)
 	
 	if "pcb" in config:
-		print("PCB Checks is:")
-		print(pcb_checks)
 		checkPCB = True
 		for key in config['pcb']:
 			if key in pcb_checks:
@@ -159,8 +157,6 @@ def main():
 		print(pcb_checks)
 						
 	if "schematic" in config:
-		print("Schematic Checks is:")
-		print(sch_checks)
 		checkSCH = True
 		for key in config['schematic']:
 			if key in sch_checks:
