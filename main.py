@@ -166,11 +166,11 @@ def main():
 		print("Schematic Checks is:")
 		print(sch_checks)
 		checkSCH = True
-		for key in config['schematic']:
+		for key in config['sch']:
 			if key in sch_checks:
 				print("::warning::Field {} specified for ALL and schematic".format(key))
 			else:
-				sch_checks[key] = config["schematic"][key]
+				sch_checks[key] = config["sch"][key]
 		print("Schematic Checks is:")
 		print(sch_checks)
 	
