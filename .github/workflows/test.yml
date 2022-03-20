@@ -10,7 +10,7 @@ jobs:
         steps:
         - name: Checkout Repo
           uses: actions/checkout@v2
-        
+        # All Files Pass with Same Requirements
         - name: All Files Pass
           uses: ./
           id: pass-all
@@ -19,3 +19,22 @@ jobs:
             config_file: "test/configs/pass-all.yml"
         - name: Verify Pass All
           run: test -z "${{ steps.pass-all.outputs.fails }}"
+         # All Files pass with separate PCB/SCH Requirements
+        - name: All Files Pass (Separate PCB/SCH)
+          uses: ./
+          id: pass-all-sep
+          with: 
+            check_all: true
+            config_file: "test/configs/pass-all-separate.yml"
+        - name: Verify Pass All Separate
+          run: test -z "${{ steps.pass-all-sep.outputs.fails }}"
+        # All Files Fail Due to Page Size
+        - name: All Fail Page Size
+          uses: ./
+          id: fail-all-page
+          continue-on-error: true
+          with: 
+            check_all: true
+            config_file: "test/configs/fail-all-pagesize.yml"
+        - name: Verify Fail All Page Size
+          run: test "${{ steps.fail-all-page.outputs.fails }}" = "test.kicad_pcb,test.kicad_sch,test.sch,"

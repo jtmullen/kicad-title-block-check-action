@@ -1,0 +1,6 @@
+## All 3 test files meet these requirements
+
+all:
+    company: "My Company"
+    pageSize: USLegal
+    
