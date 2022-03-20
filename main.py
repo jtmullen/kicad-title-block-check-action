@@ -135,8 +135,8 @@ def main():
 	
 	print("Config is:")
 	print(config)
-	pcb_checks = []
-	sch_checks = []
+	pcb_checks = {}
+	sch_checks = {}
 	
 	if "all" in config:
 		checkPCB = True
