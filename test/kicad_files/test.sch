@@ -6,7 +6,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 7
 Title "My Schematic"
-Date ""
+Date "2020-11-24"
 Rev "7.0"
 Comp "My Company"
 Comment1 "Designed By: Me"
